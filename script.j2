@@ -1,0 +1,23 @@
+{#---------USER DEFINED PARAMETERS---------#}
+{% set baselineSeconds = 100 %}
+{% if states('sensor.openweathermap_temperature')|float < 25 %}
+{# Normal precipitation #}
+{% set neededPrecip = 10 %}
+{% else %}
+{# Hot day precipitation #}
+{% set neededPrecip = 15 %}
+{% endif %}
+
+{# Request precipitation #}
+{% set precip = states('sensor.openweathermap_forecast_precipitation')| float%}
+{# Calculate needed precipitation fraction  #}
+{% set precipNeededFraction = (100 - (precip / neededPrecip ) * 100) / 100 %}
+{# Calculate needed seconds to achieve needed precipitation  #}
+{% set precipNeededSeconds = (precipNeededFraction * baselineSeconds)| round(0)  %}
+{# If needed seconds are above 0, pass needed seconds   #}
+{% if precipNeededSeconds > 0 %}
+{{ precipNeededSeconds }}
+{# If needed seconds are below 0, pass 0  #}
+{% else %}
+0
+{% endif %}
