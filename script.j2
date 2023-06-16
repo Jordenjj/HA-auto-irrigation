@@ -12,7 +12,7 @@
 {# Request precipitation #}
 {% set precip = states('sensor.openweathermap_forecast_precipitation')| float%}
 {# Calculate needed precipitation fraction  #}
-{% set precipNeededFraction = (100 - ((precip / neededPrecip ) * 100 )) / 100 %}
+{% set precipNeededFraction = 1 - (precip / neededPrecip) %}
 {# Calculate needed seconds to achieve needed precipitation  #}
 {% set precipNeededSeconds = ((precipNeededFraction * neededPrecip )| round(0) * baselineSeconds) /10  %}
 {# If needed seconds are above 0, pass needed seconds   #}
